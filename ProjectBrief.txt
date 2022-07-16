@@ -1,0 +1,21 @@
+Wearables on ecg & pbg HIV positive patients, in Vietnam 
+HIV patients are at higher risk of developing CVD because of the medication/disease
+
+
+During hospital visits
+ultrasound ecco, ECG, PPG, stress - they detected 1 out of 4 have cardiac problems
+
+phenotypes, derive features from the data
+ECG and PPG, 
+- mixed disease, COPD, hypertension, etc.
+- time-dependent features
+
+very variable
+multi-label problem 
+
+Check access
+For the project, IBME cloud
+
+patient access
+
+
