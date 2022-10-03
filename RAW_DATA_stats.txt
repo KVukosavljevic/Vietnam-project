@@ -1,0 +1,7 @@
+Patients 1,2,3,4: don't have visit 1
+Patient 3: don't know which visit it is.
+Patients 21,22,28,31-40: don't have 2nd visit
+Patient 37 has two files, I assume one is an error.
+
+2nd visit can be used as validation set 
+- check whether status changed
