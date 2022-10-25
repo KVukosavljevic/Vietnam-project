@@ -1,0 +1,10 @@
+This dataset contains ECG (Shimmer) and PPG (Smartcare) waveform data. 
+The folder was construct as 'roots\{type of data}\subject_id\'. The second visit will store in \L2. In some cases, operational issue happened, we did leave an explaination note within the same folder.
+Example: 
+roots\ecg\39EI-003-005\20211118T082948.210+0700.csv  # First visit, ecg data of subject 39EI-003-005
+roots\ecg\39EI-003-005\L2\20220113T100806.561+0700.csv # Second visit, ecg data of subject 39EI-003-005
+
+# Update 02AUG2022: 
+ECG: 40 patients, total 78 files - 37 files for first visit and 41 files for second visit (note: missing 4 first visit of patients 003-001 to 003-004, patient 003-037 has 2 files on first visit, 003-039 has 2 file on second visit)
+
+PPG: 40 patients, total 85 files - 40 files for first visit and 45 file for second visit (note: patient 003-007 have 6 files on second visit due to operational issue)
