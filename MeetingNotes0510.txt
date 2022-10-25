@@ -1,0 +1,16 @@
+Email Khan
+
+What to do about the individual channels? 
+What bipolar limb leads are used, am I treating them as individual channels or combined?
+
+PPG
+Extracting features
+Ask about: TIMESTAMP_MS,COUNTER,DEVICE_ID,PULSE_BPM,SPO2_PCT,SPO2_STATUS,PLETH,BATTERY_PCT,RED_ADC,IR_ADC,PERFUSION_INDEX
+PPG which are clinically significant?
+
+Flow:
+- ECG
+- PPG
+- ECG + PPG
+
+Data ask about the data
