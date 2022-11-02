@@ -33,9 +33,13 @@ def get_label(file):
     
     patient_id = int(re.split('-|_|/',os.path.split(file)[0])[5])
 
-    if patient_id <= 30 : return 0
+    visit = 1
+    if ("L2" in file) or ("_2.csv" in file) or ("-2.csv" in file):
+        visit = 2 
 
-    return 1
+    if patient_id <= 30 : return 0, visit
+
+    return 1, visit
 
 def read_data(file):
 

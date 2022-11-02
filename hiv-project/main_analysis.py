@@ -44,43 +44,50 @@ def test_predict(clf, X_test, y_test):
 
     return results
 
+def unison_shuffled_copies(a, b):
+    assert len(a) == len(b)
+    p = np.random.permutation(len(a))
+    return a[p], b[p]
+
 
 def main(
-    path : Path = typer.Option(
-        ..., '--path', help='Path to data'
-    ),
 ):
-    path = path
-    file_names = get_file_names(path)
-    
-    datatype = get_datatype(path) # For later use
-
     # Loading the data
-    abnormal = np.load('abnormal.npy', allow_pickle = True)
-    normal = np.load('normal.npy', allow_pickle = True)
+    tr_abnormal = np.load('tr_abnormal.npy', allow_pickle = True)
+    tr_normal = np.load('tr_normal.npy', allow_pickle = True)
 
-    print(abnormal.shape)
-    print(normal.shape)
+    ts_abnormal = np.load('ts_abnormal.npy', allow_pickle = True)
+    ts_normal = np.load('ts_normal.npy', allow_pickle = True)
+
+    print(f"Training data shape normal {tr_normal.shape} and abnormal {tr_abnormal.shape}.")
+    print(f"Test data shape normal {ts_normal.shape} and abnormal {ts_abnormal.shape}.")
 
     # Mix the data
-    abnormal = np.concatenate(abnormal)
-    normal = np.concatenate(normal)
+    tr_abnormal = np.concatenate(tr_abnormal)
+    tr_normal = np.concatenate(tr_normal)
 
-    data = np.concatenate((abnormal, normal), axis=0)
-    labels = np.concatenate([np.zeros(len(abnormal)), np.ones(len(normal))]) 
+    ts_abnormal = np.concatenate(ts_abnormal)
+    ts_normal = np.concatenate(ts_normal)
+
+    train_data = np.concatenate((tr_abnormal, tr_normal), axis=0)
+    train_labels = np.concatenate([np.zeros(len(tr_abnormal)), np.ones(len(tr_normal))])
+
+    test_data = np.concatenate((ts_abnormal, ts_normal), axis=0)
+    test_labels = np.concatenate([np.zeros(len(ts_abnormal)), np.ones(len(ts_normal))]) 
     
-    print(data.shape)
-    print(labels.shape)
+    print("After concat:")
+    print(f"Training data shape normal {train_data.shape} and labels {train_labels.shape}.")
+    print(f"Test data shape normal {test_data.shape} and labels {test_labels.shape}.")
 
     # PCA
     n_components = 2  # number of coordinates
     pca = PCA(n_components=n_components)
-    X_reduced=pca.fit_transform(data)
+    X_reduced=pca.fit_transform(train_data)
     print(X_reduced.shape)
 
     # Correlation map
     f, ax = plt.subplots(figsize=(15, 15))
-    sns.heatmap(pd.DataFrame(data).corr(numeric_only=True), annot=True, linewidths=0.5,
+    sns.heatmap(pd.DataFrame(train_data).corr(numeric_only=True), annot=True, linewidths=0.5,
                 fmt='.1f', ax=ax, cmap='coolwarm')
     plt.xticks(rotation=90)
     plt.yticks(rotation=0)
@@ -89,7 +96,8 @@ def main(
 
     # Data drop
     dropped_att = [2,3,6,11,15,5,13]
-    data_red = pd.DataFrame(data).drop(dropped_att, inplace=False, axis=1)
+    data_red = pd.DataFrame(train_data).drop(dropped_att, inplace=False, axis=1)
+    data_red_test = pd.DataFrame(test_data).drop(dropped_att, inplace=False, axis=1)
 
     f, ax = plt.subplots(figsize=(15, 15))
     sns.heatmap(pd.DataFrame(data_red).corr(numeric_only=True), annot=True, linewidths=0.5,
@@ -99,16 +107,23 @@ def main(
     plt.title('Correlation Map')
     plt.show()
 
+    ##########################################################################################################
+
     # Data analysis
-    data = np.array(data_red)
-    labels = np.concatenate([np.zeros(len(abnormal)), np.ones(len(normal))]) 
-    print(labels)
+    train_data = np.array(data_red)
+    test_data = np.array(data_red_test)
+    
+    print(f"train_labels check: {train_labels.shape} and {train_data.shape}")
+    print(f"train_labels check: {test_labels.shape} and {test_data.shape}")
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        data, labels, test_size=0.25, random_state=0)
+    #X_train, X_test, y_train, y_test = train_test_split(
+    #    train_data, train_labels, test_size=0.25, random_state=0)
 
-    print(f'Training set with feature selection has {X_train.shape[0]} samples.')
-    print(f'Testing set with feature selection has {X_test.shape[0]} samples.')
+    X_train, y_train = unison_shuffled_copies(train_data, train_labels)
+    X_test , y_test = unison_shuffled_copies(test_data, test_labels)
+
+    print(f'Training set with feature selection has {X_train.shape[0]} samples and type {type(X_train)}.')
+    print(f'Testing set with feature selection has {X_test.shape[0]} samples and type {type(X_test)}.')
 
     #LDA
     clf_lda = LinearDiscriminantAnalysis()

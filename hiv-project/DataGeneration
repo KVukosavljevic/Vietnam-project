@@ -1,0 +1,27 @@
+There are 40 patients in the data set.
+The first 30 are NORMAL and the last 10 are ABNORMAL.
+
+Data set:
+
+Generate a training and testing data set as following:
+    - first visits in the training set, second visits in the test set.
+    - this set makes the assumption that the visits are mutually independent even if the recordings belong to the same patient
+
+Alternative option:
+    - 20 + 6 in training x 2 visits and (10 + 4) x 2 in the test sets
+    - Also independence assumption since we are using data from the same patients in the sets, but no patient overlap between the sets
+
+Note able to read data for:
+
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-015/2021121510233839EI_003_015_1.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-036/2022022511100539EI-003-036-1.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-008/2021120110221539EI003008_1.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-039/L2/2022070510132939EI-003-039-2.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-016/2021121509415539EI003016_1.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-011/L2/2022031809491139EI_003_011_2.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-035/L2/2022062109370039EI-003-035-02.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-032/L2/2022063010382139EI-003-032-02.csv
+Not able to obtain features for file: RAW_DATA/Shimmer/39EI-003-005/2021111808342039EI003005-1.csv
+
+
+Concat patients SEPARATELY

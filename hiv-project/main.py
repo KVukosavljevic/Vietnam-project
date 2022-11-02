@@ -24,43 +24,66 @@ def main(
 ):
     path = path
     file_names = get_file_names(path)
+    print(path.absolute())
+    print(file_names)
     
     datatype = get_datatype(path) # For later use
 
     # Data prep
-    normal = []
-    abnormal = []
+    tr_normal = []
+    tr_abnormal = []
+
+    ts_normal = []
+    ts_abnormal = []
+
     for file in file_names:
         # Get the data
         data, columns = read_data(file)
     
         # Get label
-        label = get_label(file)
+        label, visit = get_label(file)
 
-        print(label)
+        print(f"Data read for patient {label} and visit {visit} for file {file}.")
 
         # Obtain features
         try:
             features = get_features(data, columns)
 
-            if label == 0 :
+            if label == 0 and visit == 1:
                 if np.array(features).shape[2] == 25:
-                    normal.extend(features)
+                    tr_normal.extend(features)
+            elif label == 1 and visit == 1:
+                if np.array(features).shape[2] == 25:
+                    tr_abnormal.extend(features)
+            elif label == 0 and visit == 2:
+                if np.array(features).shape[2] == 25:
+                    ts_normal.extend(features)
+            elif label == 1 and visit == 2:
+                if np.array(features).shape[2] == 25:
+                    ts_abnormal.extend(features)
             else:
-                if np.array(features).shape[2] == 25:
-                    abnormal.extend(features)
+                print(f"Not categorised for label {label} and visit {visit}.")
         except:
-            print(file)
+            print(f"Not able to obtain features for file: {file}")
 
+    tr_normal = np.array(tr_normal)
+    tr_abnormal = np.array(tr_abnormal)
 
-    normal = np.array(normal)
-    abnormal = np.array(abnormal)
-    print(normal)
+    ts_normal = np.array(ts_normal)
+    ts_abnormal = np.array(ts_abnormal)
+    
+    # Data shapes
+    print(f"Training data shapes: normal {tr_normal.shape} and abnormal {tr_abnormal.shape}.")
+    print(f"Test data shapes: normal {ts_normal.shape} and abnormal {ts_abnormal.shape}.")
 
     # Saving the data
-    np.save('normal', normal)
-    np.save('abnormal', abnormal)
+    np.save('tr_normal', tr_normal)
+    np.save('tr_abnormal', tr_abnormal)
 
+    np.save('ts_normal', ts_normal)
+    np.save('ts_abnormal', ts_abnormal)
+
+    print(f"Data successfully saved.")
 
 if __name__ == "__main__":
     typer.run(main)
