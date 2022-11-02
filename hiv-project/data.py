@@ -37,9 +37,7 @@ def get_label(file):
     if ("L2" in file) or ("_2.csv" in file) or ("-2.csv" in file):
         visit = 2 
 
-    if patient_id <= 30 : return 0, visit
-
-    return 1, visit
+    return int(patient_id > 30), visit 
 
 def read_data(file):
 
