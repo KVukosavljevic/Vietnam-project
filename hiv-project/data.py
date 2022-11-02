@@ -30,7 +30,8 @@ def get_datatype(path):
     
 def get_label(file):
     "Return 0 for a patient wih low CVD risk and 1 for high risk."
-    patient_id = int(re.split('-|_',os.path.basename(file))[2])
+    
+    patient_id = int(re.split('-|_|/',os.path.split(file)[0])[5])
 
     if patient_id <= 30 : return 0
 
