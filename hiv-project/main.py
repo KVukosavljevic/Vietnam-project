@@ -45,8 +45,11 @@ def main(
         
             # Get label
             label, visit = get_label(file)
-
             print(f"Data read for patient {label} and visit {visit} for file {file}.")
+
+            # Check if we have data
+            if label == -1:
+                continue
 
             # Obtain features
             try:

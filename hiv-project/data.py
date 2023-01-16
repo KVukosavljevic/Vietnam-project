@@ -29,15 +29,44 @@ def get_datatype(path):
     #'ECG_EMG_Status2', 'ECG_EMG_Status2']
     
 def get_label(file):
-    "Return 0 for a patient wih low CVD risk and 1 for high risk."
+    "Return 0 for a patient wih low CVD risk and 1 for high risk. Returns -1 for patients with no labels."
     
-    patient_id = int(re.split('-|_|/',os.path.split(file)[0])[5])
+    print(file)
+    pat = rf'{"39EI-"}(.*?){"/"}'
+    
+    patient_id = re.findall(pat, str(file))[0]
+    print(patient_id)
 
+    # Visit definition
     visit = 1
     if ("L2" in file) or ("_2.csv" in file) or ("-2.csv" in file):
         visit = 2 
 
-    return int(patient_id > 30), visit 
+    # Retrieving label, if high risk then 1, otherwise 0
+    df = pd.read_excel('39EI_clinical_04NOV.xlsx')
+    # All columns are ['USUBJID', 'study_risk', 'ECG abnormal', 'US abnormal', 'Heart rate',
+    """    'YOB', 'AGE', 'SEX', 'HDL_CHOL', 'TOTAL_CHOL', 'SYSBP', 'DIABP',
+       'TDF_3TC_EFV', 'TDF_3TC_EFV_YR', 'AZT_3TC_NVP', 'AZT_3TC_NVP_YR',
+       'TDF_3TC_DTG', 'TDF_3TC_DTG_YR', 'AZT_3TC_LPV', 'AZT_3TC_LPV_YR',
+       'INDINAVIR', 'INDINAVIR_YR', 'IOPINAVIR', 'IOPINAVIR_YR', 'ABACAVIR',
+       'ABACAVIR_YR', 'ABACAVIR_YR.1', 'HYPERTENSION', 'ANGINA_PAIN',
+       'MYOCARDIAL_INFARCTION', 'CCF_GRADE_I_III', 'ANAEMIA', 'CCF_GRADE_IV',
+       'PERIPHERAL_VASCULAR', 'CEREBROVASCULAR', 'CHRONIC_PULMONARY',
+       'SEVERE_RESP', 'CONNECTIVE_TISSUE', 'PEPTIC_ULCER', 'MILD_LIVER',
+       'LIVER_DIS', 'PLEGIA', 'KIDNEY_DIS', 'DIABETES', 'DIABETES_COMP',
+       'DEMENTIA', 'META_TUMOUR', 'AIDS', 'MALIGNANCY', 'SMOKE',
+       'ELECTIVE_SURGERY', 'SMOKING_PER_DAY', 'IMM', 'OTHER_DISEASE',
+       'SYPHILIS', 'HEIGHT', 'WEIGHT']
+ """
+
+    df = df[["USUBJID", "study_risk"]]
+    try:
+        i = df.loc[df["USUBJID"] == '003-059']["study_risk"].tolist()[0]
+    except:
+        print(f'Patient id {patient_id} is out of range and will be excluded.')
+        return -1, visit
+    
+    return int(i == 'high'), visit 
 
 def read_data(file, datatype):
     "Reads shimmer and ppg data, returns the data and column names as numpy arrays."
