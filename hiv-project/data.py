@@ -39,19 +39,46 @@ def get_label(file):
 
     return int(patient_id > 30), visit 
 
-def read_data(file):
+def read_data(file, datatype):
+    "Reads shimmer and ppg data, returns the data and column names as numpy arrays."
 
-    df = pd.read_csv(file, delimiter='\t', low_memory=False, header=1)
-    
-    filter = ( (df != 'no_units')).all()
-    sub_df = df.loc[: , filter]
-    filter = ( (df != 'nan')).all()
-    sub_df = sub_df.loc[: , filter]
-    
-    sub_df = sub_df[2:].copy()
-    column_names = sub_df.columns
+    if datatype == 'shimmer':
+        df = pd.read_csv(file, delimiter='\t', low_memory=False, header=1)
 
-    sub_df = sub_df.to_numpy(dtype=float)[:,:-1]
-    column_names = column_names.to_numpy(dtype=str)[:-1]
+        # Filter the ECG data
+        filter = ( (df != 'no_units')).all()
+        sub_df = df.loc[: , filter]
+        filter = ( (df != 'nan')).all()
+        sub_df = sub_df.loc[: , filter]
+        
+        sub_df = sub_df[2:].copy()
+        column_names = sub_df.columns
+        
+        sub_df = sub_df.to_numpy(dtype=float)[:,:-1]
+        column_names = column_names.to_numpy(dtype=str)[:-1]
+
+    elif datatype == 'ppg':
+        df = pd.read_csv(file, delimiter=',', low_memory=False, header=0)
+        
+        # Example print to check data print(df.loc[5:10,:])
+        # All cols are ['TIMESTAMP_MS', 'COUNTER', 'DEVICE_ID', 'PULSE_BPM', 'SPO2_PCT', 'SPO2_STATUS', 'PLETH',
+        #                'BATTERY_PCT', 'RED_ADC', 'IR_ADC','PERFUSION_INDEX']
+
+        # Column names I don't need for now: ['COUNTER', 'DEVICE_ID', 'RED_ADC', 'IR_ADC', 'BATTERY_PCT']
+        dropped_cols = ['COUNTER', 'DEVICE_ID', 'RED_ADC', 'IR_ADC', 'BATTERY_PCT']
+        df = df.drop(dropped_cols, axis=1)
+        
+        # Filter the ppg data, basic data cleaning
+        filter = ( (df != 'no_units')).all()
+        sub_df = df.loc[: , filter]
+        filter = ( (sub_df != 'nan')).all()
+        sub_df = sub_df.loc[: , filter]
+
+        # Extract data and column names
+        column_names = sub_df.columns.to_numpy(dtype=str)
+        sub_df = sub_df.to_numpy(dtype=float)
+
+    else:
+        print('Not recognised datatype.')
 
     return sub_df, column_names
