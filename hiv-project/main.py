@@ -40,9 +40,6 @@ def main(
         ts_abnormal = []
 
         for file in file_names:
-            # Get the data
-            data, columns = read_data(file,datatype)
-        
             # Get label
             label, visit = get_label(file)
             print(f"Data read for patient {label} and visit {visit} for file {file}.")
@@ -50,6 +47,9 @@ def main(
             # Check if we have data
             if label == -1:
                 continue
+
+            # Get the data
+            data, columns = read_data(file,datatype)
 
             # Obtain features
             try:
@@ -100,15 +100,19 @@ def main(
         ts_abnormal_ppg = []
 
         for file in file_names[:1]:
-            print('Reading the data.')
+            print(f'Reading the {datatype} data.')
+
+            # Get label
+            label, visit = get_label(file)
+            print(f"Data read for patient {label} and visit {visit} for file {file}.")
+
+            # Check if we have data
+            if label == -1:
+                continue
 
             # Get the data
             data, columns = read_data(file,datatype)
 
-            # Get label
-            label, visit = get_label(file)
-
-            print(f"Data read for patient {label} and visit {visit} for file {file}.")
             break
 
             # Obtain features

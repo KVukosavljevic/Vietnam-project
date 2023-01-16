@@ -31,12 +31,9 @@ def get_datatype(path):
 def get_label(file):
     "Return 0 for a patient wih low CVD risk and 1 for high risk. Returns -1 for patients with no labels."
     
-    print(file)
     pat = rf'{"39EI-"}(.*?){"/"}'
-    
     patient_id = re.findall(pat, str(file))[0]
-    print(patient_id)
-
+    
     # Visit definition
     visit = 1
     if ("L2" in file) or ("_2.csv" in file) or ("-2.csv" in file):
@@ -61,7 +58,7 @@ def get_label(file):
 
     df = df[["USUBJID", "study_risk"]]
     try:
-        i = df.loc[df["USUBJID"] == '003-059']["study_risk"].tolist()[0]
+        i = df.loc[df["USUBJID"] == patient_id]["study_risk"].tolist()[0]
     except:
         print(f'Patient id {patient_id} is out of range and will be excluded.')
         return -1, visit
