@@ -37,7 +37,16 @@ def get_label(file):
     # Visit definition
     visit = 1
     if ("L2" in file) or ("_2.csv" in file) or ("-2.csv" in file):
-        visit = 2 
+        visit = 2
+    if ("L3" in file) or ("_3.csv" in file) or ("-3.csv" in file):
+        visit = 3
+    if ("L4" in file) or ("_4.csv" in file) or ("-4.csv" in file):
+        visit = 4
+    if ("L5" in file) or ("_5.csv" in file) or ("-5.csv" in file):
+        visit = 5
+    if ("L6" in file) or ("_6.csv" in file) or ("-6.csv" in file):
+        visit = 6 
+
 
     # Retrieving label, if high risk then 1, otherwise 0
     df = pd.read_excel('39EI_clinical_04NOV.xlsx')
