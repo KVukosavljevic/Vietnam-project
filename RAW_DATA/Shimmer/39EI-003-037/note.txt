@@ -1,1 +1,0 @@
-The first record was interrupted - so we recorded again and kept both file
