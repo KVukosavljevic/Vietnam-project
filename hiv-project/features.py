@@ -6,6 +6,8 @@ from scipy.signal import argrelextrema
 from itertools import pairwise
 from sklearn.metrics import auc
 
+from plot_functions import plot_ppg_feats
+
 
 def ecg_features(data):
     frame_len = 10_000
@@ -54,12 +56,13 @@ def get_features_ecg(data, columns):
 def get_features_ppg(data, columns):
     "Retrieving features from ppg data"
 
-    plot_ppg = False
-    if plot_ppg is True: plotppg(data, columns)
+    plotppg = True
+    if plotppg is True: plot_ppg(data, columns)
 
-    # What do SPO2 status jumps mean?
+    # What do SPO2 status jumps mean? <- means that there is an error in the signal measurement
 
     ############# PPG data ##################
+    
     # Extracting features mentioned in https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6426305/
 
     # There are 4 ppg and 7 ppg second derivative features
@@ -84,7 +87,7 @@ def get_features_ppg(data, columns):
     #
     # ppg_features["pulse_area"] = auc(xx,yy)
 
-    ppg_features["p2p_int"] = np.array([y - x for x, y in pairwise(ppg_features["sys_amp"])])
+    ppg_features["p2p_int"] = np.array([y - x for x, y in pairwise(ppg_features["sys_time"])])
     print('------------------')
     
     print(ppg_features['sys_amp'])
@@ -94,23 +97,12 @@ def get_features_ppg(data, columns):
 
     ppg_features["las_ind"] = np.array([y - x for x, y in pairwise(data[loc_max,0])])
     
-    plt.plot(data[:,0], data[:,4])
-    plt.plot(data[loc_max,0], data[loc_max,4], 'r*')
-    plt.plot(data[loc_min,0], data[loc_min,4], 'r*')
-    plt.show()
-
-    plt.hist(ppg_features["p2p_int"])
-    plt.title('Peak-to-peak lengths in ms')
-    plt.show()
-
-    plt.hist(ppg_features["las_ind"])
-    plt.show()
-
-    input()
+    plot_ppg_feats(data, loc_max, loc_min, ppg_features)
 
     return data
 
-def plotppg(data, columns):
+def plot_ppg(data, columns):
+    """This function plots the 5 columns in the ppg data."""
     print(columns)
 
     fig, axs = plt.subplots(3, 2)

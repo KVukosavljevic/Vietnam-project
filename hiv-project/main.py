@@ -5,8 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from data import get_file_names, get_datatype, read_data, get_label
-from features import get_features_ecg, get_features_ppg
+from data import get_file_names, get_datatype, read_data, get_label, stand_pleth, filter_pleth
+from features import get_features_ecg, get_features_ppg, plot_ppg
+from plot_functions import plot_spo2_checks_hist, plot_pleth
 
 from pathlib import Path 
 import typer
@@ -99,7 +100,7 @@ def main(
         ts_low_ppg = []
         ts_high_ppg = []
 
-        for file in file_names[:3]:
+        for file in file_names[1:2]:
             print(f'Reading the {datatype} data.')
 
             # Get label
@@ -113,8 +114,29 @@ def main(
             # Get the data
             data, columns = read_data(file,datatype)
 
+            # Retrieve ppg_snippets
+            
+            #ppgs = get_ppgs(data)
+
+            plotspo2 = False
+            if plotspo2 is True: plot_spo2_checks_hist(data)
+            
+            # Shift to zero pleth
+            data[:,4] = stand_pleth(data[:,4])
+
+            # Plot ppg & get spectrum
+            plot_pleth(data) # Example plot before and after filtering
+
+            # Plot all ppg data
+            #plot_ppg(data, columns)
+
+            # Preprocess ppg_pleth data
+            #data[:,4] = filter_pleth(data[:,4])   # 1.104 - 1.106 ms
+
             # Obtain features
             features = get_features_ppg(data, columns)
+
+            continue
             try:
                 features = get_features_ppg(data, columns)
 

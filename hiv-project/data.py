@@ -3,6 +3,8 @@ import pandas as pd
 import pathlib
 import os
 import re
+import numpy as np
+from scipy.signal import butter, sosfilt
 
 def get_file_names(path):
     csv_files = []
@@ -46,7 +48,6 @@ def get_label(file):
         visit = 5
     if ("L6" in file) or ("_6.csv" in file) or ("-6.csv" in file):
         visit = 6 
-
 
     # Retrieving label, if high risk then 1, otherwise 0
     df = pd.read_excel('39EI_clinical_04NOV.xlsx')
@@ -117,3 +118,28 @@ def read_data(file, datatype):
         print('Not recognised datatype.')
 
     return sub_df, column_names
+
+def butter_bandpass(lowcut, highcut, fs, order=4):
+    return butter(order, [lowcut, highcut], fs=fs, btype='bandpass',output='sos')
+
+
+def stand_pleth(data):
+    '''This function removes the DC offset from the data.'''
+
+    return data - np.mean(data)
+
+def filter_pleth(data):
+    '''This function applies a 4th Butterworth bandpass filter between 0.4 - 16.8 Hz to the pleth data.'''
+    T = 1/100   # Sampling frequency is 100Hz
+
+    bp_filt = butter_bandpass(lowcut=0.1,highcut=16.8,fs=1/T,order=4)
+    yfilt = sosfilt(bp_filt, data)
+
+    return yfilt
+
+def get_ppgs(data):
+
+    spo2_status = data[:,3]
+
+
+    return spo2_status
